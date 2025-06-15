@@ -3,7 +3,7 @@ import json
 
 def model(dbt, session):
     # Reference another model or source
-    stg_orders_df = dbt.ref("stg_orders").toPandas()
+    stg_orders_df = dbt.ref('stg_saad_woocommerce_api__raw_woocommerce_orders').toPandas()
     
     def safe_extract(items):
         if isinstance(items, list):

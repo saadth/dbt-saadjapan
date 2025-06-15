@@ -7,7 +7,7 @@ source as (
 ),
 
 renamed as (
-
+    Select
     CAST(id as int64) as order_id,
     JSON_VALUE(raw_payload, '$.date_modified') as date_modified,
     JSON_VALUE(raw_payload, '$.date_modified') as dummy,
