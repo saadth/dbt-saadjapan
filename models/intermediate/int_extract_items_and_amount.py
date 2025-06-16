@@ -2,42 +2,41 @@ import pandas as pd
 import json
 
 def model(dbt, session):
-    df = dbt.ref('stg_saad_woocommerce_api__raw_woocommerce_orders')
+    df = dbt.ref("stg_orders").toPandas()
 
-    def parse_items(items):
+    def safe_extract(items):
+        if isinstance(items, list):
+            return items
         try:
-            return [json.loads(item) for item in items] if isinstance(items, list) else []
+            parsed = json.loads(items)
+            return parsed if isinstance(parsed, list) else []
         except:
             return []
 
-    def extract_item_data(items):
-        skus, quantities, subtotals = [], [], []
-        qty_sum, subtotal_sum = 0, 0
-        for item in items:
-            sku = item.get('sku', '')
-            qty = int(item.get('quantity', 0))
-            sub = int(item.get('subtotal', 0))
-            skus.append(sku)
-            quantities.append(str(qty))
-            subtotals.append(str(sub))
-            qty_sum += qty
-            subtotal_sum += sub
-        return pd.Series({
-            'line_sku': ', '.join(skus),
-            'line_quantity': ', '.join(quantities),
-            'line_subtotal': ', '.join(subtotals),
-            'quantity': qty_sum,
-            'subtotal': subtotal_sum
-        })
+    def extract_field(item_list, field):
+        try:
+            return ', '.join(str(json.loads(i).get(field, '')) for i in item_list)
+        except:
+            return ''
 
-    df['parsed_items'] = df['items_details'].apply(parse_items)
-    item_data = df['parsed_items'].apply(extract_item_data)
-    df = pd.concat([df, item_data], axis=1)
+    def sum_field(item_list, field):
+        try:
+            return sum(int(json.loads(i).get(field, 0) or 0) for i in item_list)
+        except:
+            return 0
 
-    df['total'] = df['total'].fillna(0.0).astype(float)
-    df['subtotal'] = df['subtotal'].fillna(0.0).astype(float)
+    df["parsed_items"] = df["items_details"].apply(safe_extract)
+    df["line_sku"] = df["parsed_items"].apply(lambda x: extract_field(x, 'sku'))
+    df["line_quantity"] = df["parsed_items"].apply(lambda x: extract_field(x, 'quantity'))
+    df["line_subtotal"] = df["parsed_items"].apply(lambda x: extract_field(x, 'subtotal'))
+    df["quantity"] = df["parsed_items"].apply(lambda x: sum_field(x, 'quantity'))
+    df["subtotal"] = df["parsed_items"].apply(lambda x: sum_field(x, 'subtotal'))
+
+    df['total'] = pd.to_numeric(df['total'], errors='coerce').fillna(0)
     df['discount'] = df['total'] - df['subtotal']
 
-    df = df.dropna(axis=1, how='all').reset_index(drop=True)
+    df.fillna('', inplace=True)
+    df = df.dropna(axis=1, how='all')
+    df.reset_index(drop=True, inplace=True)
 
     return df
