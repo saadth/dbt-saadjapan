@@ -22,13 +22,29 @@ renamed as (
     JSON_VALUE(raw_payload, '$.currency') as currency,
     JSON_VALUE(raw_payload, '$.payment_method') as payment_method,
     JSON_VALUE(raw_payload, '$.created_via') as created_via,
-    JSON_VALUE(raw_payload, '$.pos_user') as pos_user,
     JSON_EXTRACT_ARRAY(raw_payload, '$.line_items') as items_details,
     JSON_EXTRACT_ARRAY(raw_payload, '$.meta_data') as meta_data,
-
-    raw_payload
     from source 
 
+),
+
+status_cleaned as (
+
+    select *
+    from renamed
+    where status not in ('pos-open','pending') and total is not null
+),
+
+duplicate_cleaned as(
+select * except(row_num)
+from
+    (
+        select *,
+            row_number() over (partition by order_id, status order by date_modified desc) as row_num
+        from status_cleaned
+    )
+where row_num =1
 )
 
-select * from renamed
+select *
+from duplicates_cleaned
