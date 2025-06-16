@@ -47,4 +47,4 @@ where row_num =1
 )
 
 select *
-from duplicates_cleaned
+from duplicate_cleaned
