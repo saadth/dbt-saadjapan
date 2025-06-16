@@ -10,7 +10,6 @@ renamed as (
     Select
     CAST(id as int64) as order_id,
     JSON_VALUE(raw_payload, '$.date_modified') as date_modified,
-    JSON_VALUE(raw_payload, '$.date_modified') as dummy,
     extract( date from timestamp(JSON_VALUE(raw_payload, '$.date_created'))) as date_created,
     JSON_VALUE(raw_payload, '$.billing.first_name') as first_name,
     JSON_VALUE(raw_payload, '$.billing.last_name') as last_name,
