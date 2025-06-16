@@ -27,7 +27,7 @@ aggregated as(
   sum(quantity) as quantity,
   sum(subtotal) as subtotal,
   from items
-  group by order_id, date_modified, status, total )
+  group by order_id, date_modified, status, total ),
 
 joined as (
   select
