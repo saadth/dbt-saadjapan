@@ -2,57 +2,42 @@ import pandas as pd
 import json
 
 def model(dbt, session):
-    # Reference another model or source
-    stg_orders_df = dbt.ref('stg_saad_woocommerce_api__raw_woocommerce_orders').toPandas()
-    
-    def safe_extract(items):
-        if isinstance(items, list):
-            return items
-        return []
+    df = dbt.ref('stg_saad_woocommerce_api__raw_woocommerce_orders').toPandas()
 
-    stg_orders_df["parsed_items"] = stg_orders_df["items_details"].apply(safe_extract)
+    def parse_items(items):
+        try:
+            return [json.loads(item) for item in items] if isinstance(items, list) else []
+        except:
+            return []
 
-    # Line SKU
-    stg_orders_df['line_sku'] = stg_orders_df['parsed_items'].apply(
-        lambda item_list: ', '.join(json.loads(item).get('sku') for item in item_list)
-    )
+    def extract_item_data(items):
+        skus, quantities, subtotals = [], [], []
+        qty_sum, subtotal_sum = 0, 0
+        for item in items:
+            sku = item.get('sku', '')
+            qty = int(item.get('quantity', 0))
+            sub = int(item.get('subtotal', 0))
+            skus.append(sku)
+            quantities.append(str(qty))
+            subtotals.append(str(sub))
+            qty_sum += qty
+            subtotal_sum += sub
+        return pd.Series({
+            'line_sku': ', '.join(skus),
+            'line_quantity': ', '.join(quantities),
+            'line_subtotal': ', '.join(subtotals),
+            'quantity': qty_sum,
+            'subtotal': subtotal_sum
+        })
 
-    # Line Quantity
-    stg_orders_df['line_quantity'] = stg_orders_df['parsed_items'].apply(
-        lambda item_list: ', '.join(str(json.loads(item).get('quantity')) for item in item_list)
-    )
+    df['parsed_items'] = df['items_details'].apply(parse_items)
+    item_data = df['parsed_items'].apply(extract_item_data)
+    df = pd.concat([df, item_data], axis=1)
 
-    # Line Subtotal
-    stg_orders_df['line_subtotal'] = stg_orders_df['parsed_items'].apply(
-        lambda item_list: ', '.join(str(json.loads(item).get('subtotal')) for item in item_list)
-    )
+    df['total'] = df['total'].fillna(0.0).astype(float)
+    df['subtotal'] = df['subtotal'].fillna(0.0).astype(float)
+    df['discount'] = df['total'] - df['subtotal']
 
-    # Quantity
-    stg_orders_df['quantity'] = stg_orders_df['parsed_items'].apply(
-        lambda item_list: sum(int(json.loads(item).get('quantity')) for item in item_list)
-    )
+    df = df.dropna(axis=1, how='all').reset_index(drop=True)
 
-    # Subtotal
-    stg_orders_df['subtotal'] = stg_orders_df['parsed_items'].apply(
-        lambda item_list: sum(int(json.loads(item).get('subtotal')) for item in item_list)
-    )
-
-    # Discount
-    stg_orders_df['discount'] = stg_orders_df['total'].astype(float) - stg_orders_df['subtotal'].astype(float)
-
-    # Fix types and nulls
-    stg_orders_df['line_sku'] = stg_orders_df['line_sku'].fillna('').astype(str)
-    stg_orders_df['line_quantity'] = stg_orders_df['line_quantity'].fillna('').astype(str)
-    stg_orders_df['line_subtotal'] = stg_orders_df['line_subtotal'].fillna('').astype(str)
-    stg_orders_df['quantity'] = stg_orders_df['quantity'].fillna(0).astype(int)
-    stg_orders_df['subtotal'] = stg_orders_df['subtotal'].fillna(0.0).astype(float)
-    stg_orders_df['total'] = stg_orders_df['total'].fillna(0.0).astype(float)
-    stg_orders_df['discount'] = stg_orders_df['discount'].fillna(0.0).astype(float)
-
-    # Drop columns that are entirely None
-    stg_orders_df = stg_orders_df.dropna(axis=1, how='all')
-
-    # Reset index
-    stg_orders_df.reset_index(drop=True, inplace=True)
-
-    return stg_orders_df
+    return df
