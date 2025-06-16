@@ -3,41 +3,40 @@ with orders as (
   from {{ ref('stg_saad_woocommerce_api__raw_woocommerce_orders') }}
 ),
 
-items_exploded as (
-  select
+items as(
+ select
     o.order_id,
-    o.total,
-    item_json,
+    o.status,
+    o.date_modified,
+    SAFE_CAST(o.total as FLOAT64) as total,
     JSON_VALUE(item_json, '$.sku') as sku,
     SAFE_CAST(JSON_VALUE(item_json, '$.quantity') AS INT64) as quantity,
     SAFE_CAST(JSON_VALUE(item_json, '$.subtotal') AS FLOAT64) as subtotal
   from orders o,
-  UNNEST(o.items_details) as item_json  -- ✅ FIXED: no JSON_QUERY_ARRAY
-),
+  UNNEST(o.items_details) as item_json),
 
-aggregated as (
+aggregated as(
   select
-    order_id,
-    STRING_AGG(sku, ', ') as line_sku,
-    STRING_AGG(CAST(quantity AS STRING), ', ') as line_quantity,
-    STRING_AGG(CAST(subtotal AS STRING), ', ') as line_subtotal,
-    SUM(quantity) as quantity,
-    SUM(subtotal) as subtotal
-  from items_exploded
-  group by order_id
-),
+  order_id,
+  status,
+  date_modified,
+  total,
+  string_agg(sku,", ") as line_sku,
+  string_agg(SAFE_CAST(quantity as string),", ") as line_quantity,
+  string_agg(SAFE_CAST(subtotal as string),", ") as line_subtotal,
+  sum(quantity) as quantity,
+  sum(subtotal) as subtotal,
+  from items
+  group by order_id, date_modified, status, total )
 
-final as (
+joined as (
   select
-    o.*,
-    a.line_sku,
-    a.line_quantity,
-    a.line_subtotal,
-    a.quantity,
-    a.subtotal,
-    SAFE_CAST(o.total AS FLOAT64) - a.subtotal as discount
-  from orders o
-  left join aggregated a using(order_id)
+    a.*,
+    o.* except(order_id, date_modified , status, total)
+  from aggregated as a
+  left join orders as o 
+  on a.order_id=o.order_id and a.status=o.status and a.date_modified=o.date_modified
 )
 
-select * from final
+select *
+from joined
