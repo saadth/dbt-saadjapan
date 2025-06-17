@@ -32,7 +32,7 @@ with
 
     discount as (
         select *,
-        subtotal-total as discount
+        (subtotal+shipping_fee)-total as discount
         from aggregated
     ),
 
