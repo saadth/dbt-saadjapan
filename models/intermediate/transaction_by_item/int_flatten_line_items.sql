@@ -1,7 +1,6 @@
 with
     orders as (
         select * from {{ ref("stg_saad_woocommerce_api__raw_woocommerce_orders") }}
-        where order_id=38308
     ),
 flatten as(
 select
