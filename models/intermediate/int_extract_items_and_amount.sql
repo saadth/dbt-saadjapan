@@ -30,9 +30,16 @@ with
         group by order_id, date_modified, status, total
     ),
 
+    discount as (
+        select *,
+        subtotal-total as discount
+        from aggregated
+    ),
+
     joined as (
-        select a.*, o.* except (order_id, date_modified, status, total)
-        from aggregated as a
+        select a.*
+        , o.* except (order_id, date_modified, status, total)
+        from discount as a
         left join
             orders as o
             on a.order_id = o.order_id
