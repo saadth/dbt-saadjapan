@@ -8,7 +8,7 @@ with
             o.order_id,
             o.status,
             o.date_modified,
-            safe_cast(o.total as float64) as total,
+            o.total,
             json_value(item_json, '$.sku') as sku,
             safe_cast(json_value(item_json, '$.quantity') as int64) as quantity,
             safe_cast(json_value(item_json, '$.subtotal') as float64) as subtotal
@@ -30,22 +30,21 @@ with
         group by order_id, date_modified, status, total
     ),
 
-    discount as (
-        select *,
-        (subtotal+shipping_fee)-total as discount
-        from aggregated
-    ),
-
     joined as (
         select a.*
         , o.* except (order_id, date_modified, status, total)
-        from discount as a
+        from aggregated as a
         left join
             orders as o
             on a.order_id = o.order_id
             and a.status = o.status
             and a.date_modified = o.date_modified
-    )
+    ),
 
+discount as (
+        select *,
+        (total-(subtotal+shipping_fee)) as discount
+        from joined
+)
 select *
-from joined
+from discount
