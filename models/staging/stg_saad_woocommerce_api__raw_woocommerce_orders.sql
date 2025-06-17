@@ -8,19 +8,19 @@ with
 
     renamed as (
         select
-            cast(id as int64) as order_id,
-            json_value(raw_payload, '$.date_modified') as date_modified,
+            safe_cast(id as int64) as order_id,
+            DATETIME(json_value(raw_payload, '$.date_modified')) as date_modified,
             extract(
                 date from timestamp(json_value(raw_payload, '$.date_created'))
             ) as date_created,
             json_value(raw_payload, '$.billing.first_name') as first_name,
             json_value(raw_payload, '$.billing.last_name') as last_name,
             json_value(raw_payload, '$.status') as status,
-            json_value(raw_payload, '$.customer_id') as customer_id,
+            safe_cast(json_value(raw_payload, '$.customer_id') as int64) as customer_id,
             json_value(raw_payload, '$.shipping.country') as country,
             json_value(raw_payload, '$.billing.email') as email,
-            json_value(raw_payload, '$.shipping_total') as shipping_fee,
-            json_value(raw_payload, '$.final_amount') as total,
+            safe_cast(json_value(raw_payload, '$.shipping_total')as float64) as shipping_fee,
+            safe_cast(json_value(raw_payload, '$.final_amount') as float64) as total,
             json_value(raw_payload, '$.currency') as currency,
             json_value(raw_payload, '$.payment_method') as payment_method,
             json_value(raw_payload, '$.created_via') as created_via,
