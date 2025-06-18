@@ -8,7 +8,7 @@ select
     o.date_modified,
     o.date_created,
     o.status,
-    json_value(item_json, '$.sku') as sku,
+    if(json_value(item_json, '$.sku')='',json_value(item_json, '$.name'),json_value(item_json, '$.sku')) as sku,
     safe_cast(json_value(item_json, '$.quantity') as int64) as quantity,
     safe_cast(json_value(item_json, '$.subtotal') as float64) / safe_cast(json_value(item_json, '$.quantity') as int64) as price,
     safe_cast(json_value(item_json, '$.price') as float64) as price_after_discount,
