@@ -9,7 +9,7 @@ with
             o.status,
             o.date_modified,
             o.total,
-            json_value(item_json, '$.sku') as sku,
+            if(json_value(item_json, '$.sku')='',json_value(item_json, '$.name'),json_value(item_json, '$.sku')) as sku,
             safe_cast(json_value(item_json, '$.quantity') as int64) as quantity,
             safe_cast(json_value(item_json, '$.subtotal') as float64) as subtotal
         from orders o, unnest(o.items_details) as item_json
