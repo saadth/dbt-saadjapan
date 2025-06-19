@@ -13,17 +13,17 @@ with
             extract(
                 date from timestamp(json_value(raw_payload, '$.date_created'))
             ) as date_created,
-            json_value(raw_payload, '$.billing.first_name') as first_name,
-            json_value(raw_payload, '$.billing.last_name') as last_name,
-            json_value(raw_payload, '$.status') as status,
+            safe_cast(json_value(raw_payload, '$.billing.first_name') as string) as first_name,
+            safe_cast(json_value(raw_payload, '$.billing.last_name') as string) as last_name,
+            safe_cast(json_value(raw_payload, '$.status') as string) as status,
             safe_cast(json_value(raw_payload, '$.customer_id') as int64) as customer_id,
-            json_value(raw_payload, '$.shipping.country') as country,
-            json_value(raw_payload, '$.billing.email') as email,
+            safe_cast(json_value(raw_payload, '$.shipping.country') as string) as country,
+            safe_cast(json_value(raw_payload, '$.billing.email') as string) as email,
             safe_cast(json_value(raw_payload, '$.shipping_total')as float64) as shipping_fee,
             safe_cast(json_value(raw_payload, '$.final_amount') as float64) as total,
-            json_value(raw_payload, '$.currency') as currency,
-            json_value(raw_payload, '$.payment_method') as payment_method,
-            json_value(raw_payload, '$.created_via') as created_via,
+            safe_cast(json_value(raw_payload, '$.currency') as string) as currency,
+            safe_cast(json_value(raw_payload, '$.payment_method') as string) as payment_method,
+            safe_cast(json_value(raw_payload, '$.created_via') as string) as created_via,
             json_extract_array(raw_payload, '$.line_items') as items_details,
             json_extract_array(raw_payload, '$.meta_data') as meta_data,
         from source
@@ -37,6 +37,13 @@ with
         where status not in ('pos-open', 'pending') and total is not null
     ),
 
+    test_cleaned as (
+
+        select *
+        from status_cleaned
+        where lower(first_name) not in ('test')
+    ),
+
     duplicate_cleaned as (
         select * except (row_num)
         from
@@ -46,7 +53,7 @@ with
                     row_number() over (
                         partition by order_id, status order by date_modified desc
                     ) as row_num
-                from status_cleaned
+                from test_cleaned
             )
         where row_num = 1
     )
