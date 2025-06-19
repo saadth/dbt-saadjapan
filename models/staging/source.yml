@@ -1,0 +1,9 @@
+sources:
+  - name: saad_woocommerce_api
+    description: This schema contains data from WooCommerce SAADJapan.com.
+    database: saad-intl
+    schema: woocommerce_data
+    tables:
+      - name: raw_woocommerce_orders
+        description: >
+          Orders recorded by status change.
