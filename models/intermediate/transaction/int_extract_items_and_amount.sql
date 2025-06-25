@@ -1,14 +1,11 @@
 with
     orders as (
-        select * from {{ ref("stg_saad_woocommerce_api__raw_woocommerce_orders") }}
+        select * from {{ ref("int_pk_creation") }}
     ),
 
     items as (
         select
-            o.order_id,
-            o.status,
-            o.date_modified,
-            o.total,
+            o.pk,
             if(json_value(item_json, '$.sku')='',json_value(item_json, '$.name'),json_value(item_json, '$.sku')) as sku,
             safe_cast(json_value(item_json, '$.quantity') as int64) as quantity,
             safe_cast(json_value(item_json, '$.subtotal') as float64) as subtotal
@@ -17,28 +14,22 @@ with
 
     aggregated as (
         select
-            order_id,
-            status,
-            date_modified,
-            total,
+            pk,
             string_agg(sku, ", ") as line_sku,
             string_agg(safe_cast(quantity as string), ", ") as line_quantity,
             string_agg(safe_cast(subtotal as string), ", ") as line_subtotal,
             sum(quantity) as quantity,
             sum(subtotal) as subtotal,
         from items
-        group by order_id, date_modified, status, total
+        group by pk
     ),
 
     joined as (
-        select a.*
-        , o.* except (order_id, date_modified, status, total)
-        from aggregated as a
+        select *
+        from orders as o
         left join
-            orders as o
-            on a.order_id = o.order_id
-            and a.status = o.status
-            and a.date_modified = o.date_modified
+            aggregated as a
+            using (pk)
     ),
 
 discount as (
