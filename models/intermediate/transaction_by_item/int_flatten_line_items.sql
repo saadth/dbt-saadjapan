@@ -1,6 +1,6 @@
 with
     orders as (
-        select * from {{ ref("stg_saad_woocommerce_api__raw_woocommerce_orders") }}
+        select * from {{ ref("int_pk_creation") }}
     ),
 flatten as(
 select
@@ -8,6 +8,7 @@ select
     o.date_modified,
     o.date_created,
     o.status,
+    o.pk,
     if(json_value(item_json, '$.sku')='',json_value(item_json, '$.name'),json_value(item_json, '$.sku')) as sku,
     safe_cast(json_value(item_json, '$.quantity') as int64) as quantity,
     safe_cast(json_value(item_json, '$.subtotal') as float64) / safe_cast(json_value(item_json, '$.quantity') as int64) as price,
