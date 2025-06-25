@@ -1,6 +1,6 @@
 with
     orders as (
-        select * from {{ ref("stg_saad_woocommerce_api__raw_woocommerce_orders") }}
+        select * from {{ ref("int_pk_creation") }}
     ),
 flatten as(
 select
