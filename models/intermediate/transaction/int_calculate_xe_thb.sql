@@ -6,7 +6,7 @@ with
 
 add_exchange_rate as (
         select *, 
-        
+        coalesce(
         case 
         when payment_method like '%stripe%' 
         then (fees + net) / total
@@ -14,7 +14,7 @@ add_exchange_rate as (
         --paypal fees is in orgiginal currency hence in the denominator
         when payment_method like '%ppcp%' 
         then net/(total-fees)
-        end as exchange_rate
+        end, 1) as exchange_rate
         from net_fee
     ),
     thb_conversion as (
