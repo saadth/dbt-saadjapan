@@ -1,0 +1,32 @@
+version: 2
+
+models:
+  - name: int_cleaned_orders
+    description: "Intermediate model for cleaned WooCommerce orders after filtering statuses, test customers, and duplicates."
+
+    columns:
+      - name: pk
+        description: "Unique primary key made from order_id and status"
+        tests:
+          - unique
+          - not_null
+
+      - name: first_name
+        description: "First name of the customer"
+        tests:
+          - name: no_test_customers
+            description: "Ensure no orders with first_name 'test' remain"
+            test: |
+              select *
+              from {{ this }}
+              where lower(first_name) = 'test'
+
+      - name: status
+        description: "status of the order"
+        tests:
+          - name: no_invalid_status
+            description: "Ensure no orders with status 'pos-open' or 'pending'"
+            test: |
+              select *
+              from {{ this }}
+              where lower(status) in ('pos-open', 'pending')
