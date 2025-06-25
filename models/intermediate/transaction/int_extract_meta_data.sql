@@ -2,7 +2,7 @@ with
     int_pk_creation as (select * from {{ ref("int_pk_creation") }}),
 
     unnested as (
-        select p.pk, n.created_via, meta
+        select p.pk, p.created_via, meta
         from int_pk_creation as p, unnest(meta_data) as meta
     ),
 
@@ -55,7 +55,7 @@ with
     joined as (
         select o.*
         , a.gender, a.age, coalesce(a.nationality,o.country) as nationality, a.reference, a.pos_user
-        from net_fees_xe as o
+        from int_pk_creation as o
         left join
             meta_data_extract as a
             using (pk)
