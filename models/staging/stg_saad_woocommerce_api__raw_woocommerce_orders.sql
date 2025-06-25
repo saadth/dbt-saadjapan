@@ -58,5 +58,6 @@ with
         where row_num = 1
     )
 
-select *
+select 
+*
 from duplicate_cleaned
