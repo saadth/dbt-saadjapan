@@ -5,22 +5,17 @@ with
 
     xe as (
         select 
-        order_id,
-        date_modified,
-        status,
+        pk,
         safe_cast(exchange_rate as float64)as exchange_rate
         from {{ ref('int_extract_net_fee_xe') }}
     ),
 
     joined as (
     select 
-    i.*,
-    e.* except(order_id,status,date_modified)
+    *
     from flatten as i
     left join xe as e
-        on i.order_id = e.order_id
-        and i.status = e.status
-        and i.date_modified = e.date_modified
+        using (pk)
     ),
 currency_convert as (
     select
