@@ -26,7 +26,7 @@ with
 
     joined as (
         select *
-        from orders as o
+        from extract_meta_data as m
         left join
             aggregated as a
             using (pk)
