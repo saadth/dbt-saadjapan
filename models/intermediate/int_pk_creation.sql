@@ -5,7 +5,7 @@ from {{ ref('stg_saad_woocommerce_api__raw_woocommerce_orders') }}),
 make_pk as(
 select
 *,
-concat(safe_cast(order_id as string),status) as pk
+concat(safe_cast(order_id as string),'_',status) as pk
 from orders)
 
 select 
