@@ -2,16 +2,13 @@ with
     net_fees_xe as (select * from {{ ref("int_extract_net_fee_xe") }}),
 
     unnested as (
-        select n.order_id, n.status, n.date_modified, n.country, n.created_via, meta
+        select n.pk, n.created_via, meta
         from net_fees_xe as n, unnest(meta_data) as meta
     ),
 
     meta_data_extract as (
         select
-            order_id,
-            status,
-            date_modified,
-            country,
+            pk,
             max(
                 if(
                     json_value(meta, '$.key') = 'customer_gender',
@@ -26,16 +23,13 @@ with
                     null
                 )
             ) as age,
-            coalesce(
                 max(
                     if(
                         json_value(meta, '$.key') = 'customer_nationality',
                         json_value(meta, '$.value'),
                         null
                     )
-                ),
-                country
-            ) as nationality,
+                ) as nationality,
             max(
                 case
                     when json_value(meta, '$.key') = 'customer_reference'
@@ -56,16 +50,15 @@ with
                 )
              as pos_user
         from unnested
-        group by order_id, status, date_modified, country),
+        group by pk),
 
     joined as (
-        select o.*, a.gender, a.age, a.nationality, a.reference, a.pos_user
+        select o.*
+        , a.gender, a.age, coalesce(a.nationality,o.country) as nationality, a.reference, a.pos_user
         from net_fees_xe as o
         left join
             meta_data_extract as a
-            on a.order_id = o.order_id
-            and a.status = o.status
-            and a.date_modified = o.date_modified
+            using (pk)
     )
 
 Select *
