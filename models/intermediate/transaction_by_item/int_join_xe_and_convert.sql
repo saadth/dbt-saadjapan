@@ -7,7 +7,7 @@ with
         select 
         pk,
         safe_cast(exchange_rate as float64)as exchange_rate
-        from {{ ref('int_extract_net_fee_xe') }}
+        from {{ ref('int_calculate_xe_thb') }}
     ),
 
     joined as (

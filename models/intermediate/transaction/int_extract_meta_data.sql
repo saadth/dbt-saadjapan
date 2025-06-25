@@ -1,9 +1,9 @@
 with
-    net_fees_xe as (select * from {{ ref("int_extract_net_fee_xe") }}),
+    int_pk_creation as (select * from {{ ref("int_pk_creation") }}),
 
     unnested as (
-        select n.pk, n.created_via, meta
-        from net_fees_xe as n, unnest(meta_data) as meta
+        select p.pk, n.created_via, meta
+        from int_pk_creation as p, unnest(meta_data) as meta
     ),
 
     meta_data_extract as (

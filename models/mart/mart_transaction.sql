@@ -1,15 +1,5 @@
 with
-    meta_data as (select * from {{ ref('int_extract_meta_data') }}),
-
-thb_conversion as (
-    select
-    * except(items_details,meta_data),
-    safe_cast(total as float64) * safe_cast(exchange_rate as float64) as thb_total,
-    safe_cast(subtotal as float64) * safe_cast(exchange_rate as float64) as thb_subtotal,
-    safe_cast(shipping_fee as float64) * safe_cast(exchange_rate as float64) as thb_shipping_fee,
-    safe_cast(discount as float64) * safe_cast(exchange_rate as float64) as thb_discount
-    from meta_data
-),
+    xe as (select * from {{ ref('int_calculate_xe_thb') }}),
 
 organized as (
 select
@@ -44,7 +34,7 @@ age,
 nationality,
 reference,
 pos_user
-from thb_conversion
+from xe
 order by date_created asc
 )
 

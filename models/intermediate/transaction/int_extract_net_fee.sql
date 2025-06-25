@@ -56,22 +56,7 @@ with
     from items_amount as i
     left join thb_fees_and_net as f
     using (pk)
-   ),
-
-    add_exchange_rate as (
-        select *, 
-        
-        case 
-        when payment_method like '%stripe%' 
-        then (fees + net) / total
-
-        --paypal fees is in orgiginal currency hence in the denominator
-        when payment_method like '%ppcp%' 
-        then net/(total-fees)
-        end as exchange_rate
-        from joined_thb_fees_and_net
-    )
-
-
+   )
+    
 select *
-from add_exchange_rate
+from joined_thb_fees_and_net
