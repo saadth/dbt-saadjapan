@@ -9,7 +9,7 @@ with
             if(json_value(item_json, '$.sku')='',json_value(item_json, '$.name'),json_value(item_json, '$.sku')) as sku,
             safe_cast(json_value(item_json, '$.quantity') as int64) as quantity,
             safe_cast(json_value(item_json, '$.subtotal') as float64) as subtotal
-        from extract_meta_data m, unnest(o.items_details) as item_json
+        from extract_meta_data m, unnest(m.items_details) as item_json
     ),
 
     aggregated as (
