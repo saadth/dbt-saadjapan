@@ -2,17 +2,13 @@ with
     items_amount as (select * from {{ ref("int_extract_items_and_amount") }}),
 
     column_needed as (
-        select order_id, status, date_modified, payment_method, total, meta
+        select pk, payment_method, meta
         from items_amount, unnest(meta_data) as meta
-    ),
+   ),
 
-    fees_and_net as (
+   thb_fees_and_net as (
         select
-            order_id,
-            status,
-            date_modified,
-            total,
-            coalesce(
+            pk,
                 max(
                     case
                         when
@@ -26,17 +22,10 @@ with
                         then
                             safe_cast(
                                 json_value(meta, '$.value.paypal_fee.value') as float64
-                            ) * safe_cast(
-                                json_value(
-                                    meta, '$.value.exchange_rate.value'
-                                ) as float64
-                            )
+                            ) 
                     end
-                ),
-                0
-            ) as fees,
+                ) as fees,
 
-            coalesce(
                 max(
                     case
                         when
@@ -53,28 +42,36 @@ with
                                 ) as float64
                             )
                     end
-                ),
-                total
-            ) as net
+                )as net
 
         from column_needed
-        group by order_id, status, date_modified, total
+        group by pk
 
-    ),
+   ),
 
-    exchange_rate as (
-        select *, (fees + net) / total as exchange_rate from fees_and_net
-    ),
+   joined_thb_fees_and_net as (
+    select i.*,
+    coalesce(f.fees,0) as fees,
+    coalesce(f.net, i.total) as net
+    from items_amount as i
+    left join thb_fees_and_net as f
+    using (pk)
+   ),
 
-    joined as (
-        select i.*, e.fees, e.net, e.exchange_rate
-        from items_amount as i
-        left join
-            exchange_rate as e
-            on i.order_id = e.order_id
-            and i.status = e.status
-            and i.date_modified = e.date_modified
+    add_exchange_rate as (
+        select *, 
+        
+        case 
+        when payment_method like '%stripe%' 
+        then (fees + net) / total
+
+        --paypal fees is in orgiginal currency hence in the denominator
+        when payment_method like '%ppcp%' 
+        then net/(total-fees)
+        end as exchange_rate
+        from joined_thb_fees_and_net
     )
 
+
 select *
-from joined
+from add_exchange_rate
