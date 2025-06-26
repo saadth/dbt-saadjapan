@@ -16,17 +16,16 @@ models:
         tests:
           - name: no_test_customers
             description: "Ensure no orders with first_name 'test' remain"
-            test: |
-              select *
-              from {{ this }}
-              where lower(first_name) = 'test'
+            tests:
+              - dbt_utils.expression_is_true:
+                  expression: "lower(first_name) != 'test'"
+
 
       - name: status
         description: "status of the order"
         tests:
           - name: no_invalid_status
             description: "Ensure no orders with status 'pos-open' or 'pending'"
-            test: |
-              select *
-              from {{ this }}
-              where lower(status) in ('pos-open', 'pending')
+            tests:
+              - dbt_utils.expression_is_true:
+                  expression: "lower(status) not in ('pos-open', 'pending')"            
