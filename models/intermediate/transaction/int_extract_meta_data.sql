@@ -1,5 +1,5 @@
 with
-    int_pk_creation as (select * from {{ ref("int_pk_creation") }}),
+    int_pk_creation as (select * from {{ ref("int_cleaning_pk_creation") }}),
 
     unnested as (
         select p.pk, p.created_via, meta

@@ -28,36 +28,8 @@ with
             json_extract_array(raw_payload, '$.meta_data') as meta_data,
         from source
 
-    ),
-
-    status_cleaned as (
-
-        select *
-        from renamed
-        where status not in ('pos-open', 'pending') and total is not null
-    ),
-
-    test_cleaned as (
-
-        select *
-        from status_cleaned
-        where lower(first_name) not in ('test')
-    ),
-
-    duplicate_cleaned as (
-        select * except (row_num)
-        from
-            (
-                select
-                    *,
-                    row_number() over (
-                        partition by order_id, status order by date_modified desc
-                    ) as row_num
-                from test_cleaned
-            )
-        where row_num = 1
     )
 
 select 
 *
-from duplicate_cleaned
+from renamed

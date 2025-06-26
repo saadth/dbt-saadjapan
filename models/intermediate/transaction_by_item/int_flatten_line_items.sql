@@ -1,6 +1,6 @@
 with
     orders as (
-        select * from {{ ref("int_pk_creation") }}
+        select * from {{ ref("int_cleaning_pk_creation") }}
     ),
 flatten as(
 select

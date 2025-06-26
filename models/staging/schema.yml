@@ -1,0 +1,69 @@
+version: 2
+
+models:
+  - name: stg_saad_woocommerce_api__raw_woocommerce_orders
+    description: "Staging model for WooCommerce orders extracted and flattened from raw JSON payload."
+
+    columns:
+      - name: order_id
+        description: "WooCommerce order ID"
+        tests:
+          - not_null
+
+      - name: date_modified
+        description: "Timestamp when the order was last modified"
+
+      - name: date_created
+        description: "Timestamp when the order was created"
+        tests:
+          - not_null
+
+      - name: first_name
+        description: "Customer's first name from billing address"
+
+      - name: last_name
+        description: "Customer's last name from billing address"
+
+      - name: status
+        description: "Order status in WooCommerce"
+        tests:
+          - not_null
+      - name: customer_id
+        description: "WooCommerce customer ID"
+        tests:
+          - not_null
+
+      - name: country
+        description: "Shipping country"
+
+      - name: email
+        description: "Customer email address"
+
+      - name: shipping_fee
+        description: "Shipping fee for the order"
+
+      - name: total
+        description: "Total order value"
+        tests:
+          - not_null
+
+      - name: currency
+        description: "Order currency (e.g., USD, HKD, THB)"
+        tests:
+          - not_null
+
+      - name: payment_method
+        description: "Payment method used (e.g., stripe, ppcp, bank_transfer)"
+        tests:
+          - not_null
+
+      - name: created_via
+        description: "How the order was created (e.g., checkout, POS)"
+        tests:
+          - not_null
+
+      - name: items_details
+        description: "JSON array containing item line details"
+
+      - name: meta_data
+        description: "JSON array of order meta information"

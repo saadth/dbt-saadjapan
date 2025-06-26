@@ -1,0 +1,24 @@
+version: 2
+
+models:
+  - name: int_cleaned_orders
+    description: "Intermediate model for cleaned WooCommerce orders after filtering statuses, test customers, and duplicates."
+
+    columns:
+      - name: pk
+        description: "Unique primary key made from order_id and status"
+        tests:
+          - unique
+          - not_null
+
+      - name: first_name
+        description: "First name of the customer"
+        tests:
+          - dbt_utils.expression_is_true:
+              expression: "lower(first_name) != 'test'"
+
+      - name: status
+        description: "Status of the order"
+        tests:
+          - dbt_utils.expression_is_true:
+              expression: "lower(status) not in ('pos-open', 'pending')"
