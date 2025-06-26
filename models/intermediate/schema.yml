@@ -14,18 +14,11 @@ models:
       - name: first_name
         description: "First name of the customer"
         tests:
-          - name: no_test_customers
-            description: "Ensure no orders with first_name 'test' remain"
-            tests:
-              - dbt_utils.expression_is_true:
-                  expression: "lower(first_name) != 'test'"
-
+          - dbt_utils.expression_is_true:
+              expression: "lower(first_name) != 'test'"
 
       - name: status
-        description: "status of the order"
+        description: "Status of the order"
         tests:
-          - name: no_invalid_status
-            description: "Ensure no orders with status 'pos-open' or 'pending'"
-            tests:
-              - dbt_utils.expression_is_true:
-                  expression: "lower(status) not in ('pos-open', 'pending')"            
+          - dbt_utils.expression_is_true:
+              expression: "lower(status) not in ('pos-open', 'pending')"
