@@ -21,7 +21,10 @@ organized as (
     thb_total,
     created_via,
     payment_method
-    from joined_xe )
+    
+    from joined_xe
+    order by date_modified asc
+ )
 
 select *
 from organized

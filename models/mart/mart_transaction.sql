@@ -35,7 +35,7 @@ nationality,
 reference,
 pos_user
 from xe
-order by date_created asc
+order by date_modified asc
 )
 
 Select
