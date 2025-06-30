@@ -21,8 +21,8 @@ with
                             and json_value(meta, '$.key') = '_ppcp_paypal_fees'
                         then
                             safe_cast(
-                                json_value(meta, '$.value.paypal_fee.value') as float64
-                            ) 
+                                json_value(meta, '$.value.paypal_fee.value') as float64)
+                                 * safe_cast(json_value(meta, '$.value.exchange_rate.value') as float64)
                     end
                 ) as fees,
 
@@ -51,8 +51,8 @@ with
 
    joined_thb_fees_and_net as (
     select i.*,
-    coalesce(f.fees,0) as fees,
-    coalesce(f.net, i.total) as net
+    coalesce(f.fees,0) as thb_fees,
+    coalesce(f.net, i.total) as thb_net
     from items_amount as i
     left join thb_fees_and_net as f
     using (pk)
@@ -60,3 +60,4 @@ with
     
 select *
 from joined_thb_fees_and_net
+where payment_method like '%ppcp%'
