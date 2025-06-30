@@ -26,6 +26,16 @@ with
             safe_cast(json_value(raw_payload, '$.created_via') as string) as created_via,
             json_extract_array(raw_payload, '$.line_items') as items_details,
             json_extract_array(raw_payload, '$.meta_data') as meta_data,
+            
+            --shipping detail
+            safe_cast(json_value(raw_payload, '$.billing.phone') as string) as phone,
+            safe_cast(json_value(raw_payload, '$.shipping.address_1') as string) as address_1,
+            safe_cast(json_value(raw_payload, '$.shipping.address_2') as string) as address_2,
+            safe_cast(json_value(raw_payload, '$.shipping.city') as string) as city,
+            safe_cast(json_value(raw_payload, '$.shipping.state') as string) as state,
+            safe_cast(json_value(raw_payload, '$.shipping.postcode') as string) as postcode,
+
+
         from source
 
     )
