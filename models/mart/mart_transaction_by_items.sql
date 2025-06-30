@@ -23,6 +23,7 @@ organized as (
     payment_method
     
     from joined_xe
+    where status = 'completed'
     order by date_modified asc
  )
 
