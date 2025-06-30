@@ -23,7 +23,8 @@ organized as (
     payment_method
     
     from joined_xe
-    order by date_modified asc
+    where status = 'completed' and date_created > '2025-06-09'
+    order by date_created asc , order_id asc
  )
 
 select *

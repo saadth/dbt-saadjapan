@@ -35,7 +35,8 @@ nationality,
 reference,
 pos_user
 from xe
-order by order_id asc
+where date_created > '2025-06-09'
+order by date_created asc, order_id asc, date_modified asc
 )
 
 Select

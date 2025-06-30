@@ -29,5 +29,3 @@ add_exchange_rate as (
 
 select *
 from thb_conversion
-where payment_method like '%ppcp%'
-
