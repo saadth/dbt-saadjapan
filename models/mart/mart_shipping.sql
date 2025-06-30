@@ -24,6 +24,7 @@ select
         phone,
         shipping_fee,
         from extracted_shipping
+        order by date_modified
 )
 
 select *
