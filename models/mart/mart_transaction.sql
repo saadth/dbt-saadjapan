@@ -24,8 +24,8 @@ thb_subtotal,
 thb_shipping_fee,
 thb_discount,
 thb_total,
-fees as thb_fees,
-net as thb_net,
+thb_fees,
+thb_net,
 exchange_rate,
 payment_method,
 created_via,
@@ -35,7 +35,7 @@ nationality,
 reference,
 pos_user
 from xe
-order by date_modified asc
+order by order_id asc
 )
 
 Select
