@@ -60,4 +60,3 @@ with
     
 select *
 from joined_thb_fees_and_net
-where payment_method like '%ppcp%'
