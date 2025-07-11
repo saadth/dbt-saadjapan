@@ -10,7 +10,7 @@ sources:
   - name: saad_sns
     description: This schema contains data from SNS.
     database: saad-intl
-    schema: sns
+    schema: saad_sns
     tables:
       - name: ig_saadsilver_intl
         description: >
