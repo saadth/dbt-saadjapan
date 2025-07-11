@@ -18,7 +18,7 @@ sources:
       - name: line_saadsilver_intl
         description: >
           line information
-      - name: tiktok_saadsilver_intl
+      - name: tiktok_saadsilver_th
         description: >
           tiktok information
       - name: ig_saadsilver_intl_total_followers
