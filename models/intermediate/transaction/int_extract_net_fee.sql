@@ -51,7 +51,7 @@ with
 
    joined_thb_fees_and_net as (
     select i.*,
-    coalesce(f.fees,0) as thb_fees,
+    -1*(coalesce(f.fees,0)) as thb_fees,
     coalesce(f.net, i.total) as thb_net
     from items_amount as i
     left join thb_fees_and_net as f
