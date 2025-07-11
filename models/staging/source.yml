@@ -7,3 +7,20 @@ sources:
       - name: raw_woocommerce_orders
         description: >
           Orders recorded by status change.
+  - name: saad_woocommerce_api
+    description: This schema contains data from SNS.
+    database: saad-intl
+    schema: sns
+    tables:
+      - name: ig_saadsilver_intl
+        description: >
+          IG information
+      - name: line_saadsilver_intl
+        description: >
+          line information
+      - name: tiktok_saadsilver_intl
+        description: >
+          tiktok information
+      - name: ig_saadsilver_intl_total_followers
+        description: >
+          IG total followers      
