@@ -9,7 +9,7 @@ source as (
 renamed as (
 
     select
-        date,
+        safe_cast(date as date),
         follower_count_1d as ig_follower_count
 
     from source
