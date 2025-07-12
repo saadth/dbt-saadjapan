@@ -23,9 +23,10 @@ organized as (
     payment_method
     
     from joined_xe
-    where status = 'completed' and date_created > '2025-06-09'
+    where status = 'completed' or status ='processing'
     order by date_created asc , order_id asc
  )
 
 select *
 from organized
+where date_created > '2025-06-09'
