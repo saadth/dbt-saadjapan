@@ -6,9 +6,14 @@ With ig_total as (
 ig as (
     select *
     from {{ ref('stg_saad_sns__ig_saadsilver_intl') }}
-)
+),
 
+joined as (
 select
 *
 from ig
 full join ig_total using (date)
+)
+
+select *
+from joined
