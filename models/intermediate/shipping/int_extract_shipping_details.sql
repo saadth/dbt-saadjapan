@@ -5,7 +5,7 @@ with
 
 meta_data as (
 select
-pk,
+concat(order_id,'_',date_modified,'_',status) as pk,
 unnested_meta_data
 from orders , unnest(meta_data) as unnested_meta_data
 where status = 'shipped'),
