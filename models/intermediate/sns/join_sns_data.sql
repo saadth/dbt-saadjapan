@@ -13,7 +13,7 @@ tiktok as (
     select *
     from {{ ref('stg_saad_sns__tiktok_saadsilver_th') }}
 
-)
+),
 
 joined as (
 select *
