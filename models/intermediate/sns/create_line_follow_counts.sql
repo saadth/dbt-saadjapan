@@ -13,8 +13,8 @@ from line
 table_2 as (
     select 
     date as prev_date,
-    total_followers as prev_total_followers,
-    total_reach as prev_total_reach,
+    line_total_followers as prev_total_followers,
+    line_total_reach as prev_total_reach,
     index+1 as index
 from table_1
 ),
@@ -22,10 +22,10 @@ from table_1
 inner_join as (
 select
 date,
-total_followers,
-total_reach,
-total_followers - prev_total_followers as follower_count,
-total_reach - prev_total_reach as reach_count
+line_total_followers,
+line_total_reach,
+line_total_followers - prev_total_followers as line_follower_count,
+line_total_reach - prev_total_reach as line_reach_count
 from table_1
 left join table_2 as prev using (index)
 )
