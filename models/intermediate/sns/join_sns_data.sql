@@ -1,11 +1,7 @@
-With ig_total as (
-    select *
-    from {{ ref('stg_saad_sns__ig_saadsilver_intl_total_followers') }}
-
-),
+With 
 ig as (
     select *
-    from {{ ref('stg_saad_sns__ig_saadsilver_intl') }}
+    from {{ ref('join_ig_data') }}
 
 ),
 line as (
@@ -19,5 +15,12 @@ tiktok as (
 
 )
 
+joined as (
 select *
-from tiktok
+from ig
+left join line using (date)
+left join tiktok using (date)
+)
+
+select *
+from joined
