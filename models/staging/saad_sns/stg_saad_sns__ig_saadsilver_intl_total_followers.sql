@@ -9,7 +9,7 @@ source as (
 renamed as (
 
     select
-        followers_count as total_followers,
+        followers_count as ig_total_followers,
         today as date
 
     from source

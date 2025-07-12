@@ -10,8 +10,8 @@ renamed as (
 
     select
         date,
-        followers_count,
-        total_followers_count as total_followers
+        followers_count as tiktok_followers_count,
+        total_followers_count as tiktok_total_followers
 
     from source
 

@@ -10,9 +10,9 @@ renamed as (
 
     select
         date,
-        followers__blocks as block_count,
-        followers__followers as total_followers,
-        followers__targeted_reaches as total_reach
+        followers__blocks as line_block_count,
+        followers__followers as line_total_followers,
+        followers__targeted_reaches as line_total_reach
 
     from source
 
