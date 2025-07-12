@@ -9,8 +9,8 @@ source as (
 renamed as (
 
     select
-        followers_count,
-        today
+        followers_count as total_followers,
+        today as date
 
     from source
 

@@ -11,7 +11,7 @@ renamed as (
     select
         date,
         followers_count,
-        total_followers_count
+        total_followers_count as total_followers
 
     from source
 

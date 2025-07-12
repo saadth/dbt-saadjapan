@@ -10,7 +10,7 @@ renamed as (
 
     select
         date,
-        follower_count_1d
+        follower_count_1d as follower_count
 
     from source
 
