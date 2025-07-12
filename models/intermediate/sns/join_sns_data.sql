@@ -10,7 +10,7 @@ ig as (
 ),
 line as (
     select *
-    from {{ ref('stg_saad_sns__line_saadsilver_intl') }}
+    from {{ ref('create_line_follow_counts') }}
 
 ),
 tiktok as (
