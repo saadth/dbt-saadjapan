@@ -13,21 +13,21 @@ with
                 if(
                     json_value(meta, '$.key') = 'customer_gender',
                     json_value(meta, '$.value'),
-                    ''
+                    null
                 )
             ) as gender,
             max(
                 if(
                     json_value(meta, '$.key') = 'customer_age',
                     json_value(meta, '$.value'),
-                    ''
+                    null
                 )
             ) as age,
                 max(
                     if(
                         json_value(meta, '$.key') = 'customer_nationality',
                         json_value(meta, '$.value'),
-                        ''
+                        null
                     )
                 ) as nationality,
             coalesce(max(
@@ -40,12 +40,12 @@ with
                         and created_via = 'checkout'
                     then json_value(meta, '$.value')
                 end
-            ),'') as reference,
+            ),null) as reference,
                 max(
                     if(
                         json_value(meta, '$.key') = 'pos_cashier_name' and created_via='woocommerce-pos',
                         json_value(meta, '$.value'),
-                        ''
+                        null
                     )
                 )
              as pos_user
@@ -53,8 +53,12 @@ with
         group by pk),
 
     joined as (
-        select o.*
-        ,a.gender, a.age, coalesce(a.nationality,o.country) as nationality, a.reference, a.pos_user
+        select o.*,
+        IF(TRIM(a.gender) = '', NULL, a.gender) as gender, 
+        IF(TRIM(a.age) = '', NULL, a.age) as age, 
+        coalesce(a.nationality,o.country) as nationality, 
+        IF(TRIM(a.reference) = '', NULL, a.reference) as reference, 
+        IF(TRIM(a.pos_user) = '', NULL, a.pos_user) as pos_user
         from int_pk_creation as o
         left join
             meta_data_extract as a
