@@ -9,11 +9,11 @@ add_exchange_rate as (
         coalesce(
         case 
         when payment_method like '%stripe%' 
-        then (thb_fees + thb_net) / total
+        then ((-1*thb_fees) + thb_net) / total
 
         --paypal fees is in orgiginal currency hence in the denominator
         when payment_method like '%ppcp%' 
-        then (thb_fees+thb_net)/total
+        then ((-1*thb_fees)+thb_net)/total
         end, 1) as exchange_rate
         from net_fee
     ),
