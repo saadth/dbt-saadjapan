@@ -7,6 +7,9 @@ sources:
       - name: raw_woocommerce_orders
         description: >
           Orders recorded by status change.
+      - name: refund
+        description: >
+          refund data.
   - name: saad_sns
     description: This schema contains data from SNS.
     database: saad-intl
