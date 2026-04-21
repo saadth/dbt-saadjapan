@@ -10,14 +10,12 @@ sources:
       - name: refund
         description: >
           refund data.
-  - name: saad_woocommerce_polling
+  - name: saad_woocommerce_webhook
     description: This schema contains data from WooCommerce SAADJapan.com using polling.
     database: saad-intl
     schema: raw_woocommerce_v2
     tables:
       - name: orders
-        description: >
-          Polling orders from 2026-04-21
   - name: saad_sns
     description: This schema contains data from SNS.
     database: saad-intl
