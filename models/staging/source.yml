@@ -18,20 +18,3 @@ sources:
       - name: orders
         description: >
           Polling orders from 2026-04-21
-  - name: saad_sns
-    description: This schema contains data from SNS.
-    database: saad-intl
-    schema: saad_sns
-    tables:
-      - name: ig_saadsilver_intl
-        description: >
-          IG information
-      - name: line_saadsilver_intl
-        description: >
-          line information
-      - name: tiktok_saadsilver_th
-        description: >
-          tiktok information
-      - name: ig_saadsilver_intl_total_followers
-        description: >
-          IG total followers      
