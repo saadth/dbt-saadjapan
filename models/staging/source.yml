@@ -1,6 +1,6 @@
 sources:
   - name: saad_woocommerce_api
-    description: This schema contains data from WooCommerce SAADJapan.com.
+    description: This schema contains data from WooCommerce SAADJapan.com using webhook.
     database: saad-intl
     schema: woocommerce_data
     tables:
@@ -10,6 +10,12 @@ sources:
       - name: refund
         description: >
           refund data.
+  - name: saad_woocommerce_polling
+    description: This schema contains polling order data from WooCommerce SAADJapan.com.
+    database: saad-intl
+    schema: raw_woocommerce_v2
+    tables:
+      - name: orders
   - name: saad_sns
     description: This schema contains data from SNS.
     database: saad-intl
