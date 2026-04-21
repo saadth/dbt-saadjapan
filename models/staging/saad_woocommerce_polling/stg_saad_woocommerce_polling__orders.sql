@@ -1,0 +1,54 @@
+with 
+
+source as (
+
+    select * from {{ source('saad_woocommerce_polling', 'orders') }}
+
+),
+
+renamed as (
+
+    select
+        safe_cast(id as int64) as id,
+        safe_cast(number as int64) as order_id,
+        safe_cast(parent_id as int64) as parent_id,
+        safe_cast(date_created as timestamp) as date_created,
+        safe_cast(date_modified as timestamp) as date_modified,
+        safe_cast(date_paid as timestamp) as date_paid,
+        safe_cast(date_completed as timestamp) as date_completed,
+        safe_cast(status as string) as status,
+        safe_cast(currency as string) as currency,
+        safe_cast(total as float64) as total,
+        safe_cast(discount_total as float64) as discount_total,
+        safe_cast(shipping_total as float64) as shipping_total,
+        safe_cast(final_amount as float64) as final_amount,
+        safe_cast(refunds as float64) as refunds,
+        safe_cast(customer_id as int64) as customer_id,     
+        safe_cast(json_value(billing, '$.first_name') as string) as first_name,
+        safe_cast(json_value(billing, '$.last_name') as string) as last_name,
+        safe_cast(json_value(billing, '$.city') as string) as city,
+        safe_cast(json_value(billing, '$.state') as string) as state,
+        safe_cast(json_value(billing, '$.postcode') as string) as postcode,
+        safe_cast(json_value(billing, '$.country') as string) as country,
+        safe_cast(json_value(billing, '$.email') as string) as email,
+        safe_cast(json_value(shipping, '$.first_name') as string) as first_name,
+        safe_cast(json_value(shipping, '$.last_name') as string) as last_name,
+        safe_cast(json_value(shipping, '$.city') as string) as city,
+        safe_cast(json_value(shipping, '$.state') as string) as state,
+        safe_cast(json_value(shipping, '$.postcode') as string) as postcode,
+        safe_cast(json_value(shipping, '$.country') as string) as country,
+        safe_cast(payment_method as string) as payment_method,
+        safe_cast(payment_method_title as string) as payment_method_title,
+        safe_cast(created_via as string) as created_via,
+        meta_data,
+        line_items,
+        tax_lines,
+        shipping_lines,
+        fee_lines,
+        coupon_lines
+    from source
+
+)
+
+select * 
+from renamed
