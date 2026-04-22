@@ -56,6 +56,46 @@ max(
         json_value(meta, '$.value'),
         null
         )) as reference,
+--stripe--
+max(
+    if(
+        json_value(meta, '$.key') = '_stripe_fee',
+        json_value(meta, '$.value'),
+        null
+        )) as stripe_fee,
+max(
+    if(
+        json_value(meta, '$.key') = '_stripe_net',
+        json_value(meta, '$.value'),
+        null
+        )) as stripe_net,
+
+max(
+    if(
+        json_value(meta, '$.key') = '_stripe_currency',
+        json_value(meta, '$.value'),
+        null
+        )) as stripe_currency,
+--paypal--
+max(
+    if(
+        json_value(meta, '$.key') = '_paypal_fee',
+        json_value(meta, '$.value'),
+        null
+        )) as paypal_fee,
+max(
+    if(
+        json_value(meta, '$.key') = '_paypal_net',
+        json_value(meta, '$.value'),
+        null
+        )) as paypal_net,
+
+max(
+    if(
+        json_value(meta, '$.key') = 'wmc_order_info',
+        JSON_QUERY(meta, '$.value'),
+        null
+        )) as exchange_rates
 
 from unnested
 group by order_id),
@@ -67,7 +107,13 @@ IF(TRIM(a.cpos_fulfillment_status) = '', NULL, a.cpos_fulfillment_status) as cpo
 IF(TRIM(a.gender) = '', NULL, a.gender) as gender, 
 IF(TRIM(a.age) = '', NULL, a.age) as age, 
 IF(TRIM(a.reference) = '', NULL, a.reference) as reference,
-IF(TRIM(a.purchase_reason) = '', NULL, a.purchase_reason) as purchase_reason
+IF(TRIM(a.purchase_reason) = '', NULL, a.purchase_reason) as purchase_reason,
+IF(TRIM(a.stripe_fee) = '', NULL, a.stripe_fee) as stripe_fee, 
+IF(TRIM(a.stripe_net) = '', NULL, a.stripe_net) as stripe_net, 
+IF(TRIM(a.stripe_currency) = '', NULL, a.stripe_currency) as stripe_currency,
+IF(TRIM(a.paypal_fee) = '', NULL, a.paypal_fee) as paypal_fee, 
+IF(TRIM(a.paypal_net) = '', NULL, a.paypal_net) as paypal_net, 
+IF(TRIM(a.exchange_rates) = '', NULL, a.exchange_rates) as exchange_rates
 from orders as o
 left join
     meta_data_extract as a
