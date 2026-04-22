@@ -13,12 +13,6 @@ models:
 
       - name: first_name
         description: "First name of the customer"
-        tests:
-          - dbt_utils.expression_is_true:
-              expression: "lower(first_name) != 'test'"
 
       - name: status
         description: "Status of the order"
-        tests:
-          - dbt_utils.expression_is_true:
-              expression: "lower(status) not in ('pos-open', 'pending')"

@@ -40,12 +40,12 @@ renamed as (
         safe_cast(payment_method as string) as payment_method,
         safe_cast(payment_method_title as string) as payment_method_title,
         safe_cast(created_via as string) as created_via,
-        meta_data,
-        line_items,
-        tax_lines,
-        shipping_lines,
-        fee_lines,
-        coupon_lines
+        meta_data as meta_data,
+        line_items as line_items,
+        tax_lines as tax_lines,
+        shipping_lines as shipping_lines ,
+        fee_lines as fee_lines ,
+        coupon_lines as coupon_lines
     from source
 
 )
