@@ -17,7 +17,7 @@ exchange_rate as
     END AS extracted_exchange_rate
 from int_polling_extract_metadata),
 
-thb_amount_calc(
+thb_amount_calc as (
 select
 *,
 SAFE_DIVIDE(safe_cast(total as float64),safe_cast(extracted_exchange_rate
