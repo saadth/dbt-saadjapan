@@ -1,5 +1,5 @@
 with
-    transactions as (select * from {{ ref('int_polling_extract_net_fee') }}),
+    transactions as (select * from {{ ref('int_polling_add_line_items_to_transaction') }}),
 organized as (
     select
     order_id,
@@ -27,7 +27,13 @@ organized as (
     extracted_exchange_rate as exchange_rate,
     thb_total,
     thb_discount_total,
-    thb_final_amount
+    thb_final_amount,
+    line_sku,
+    line_product_name,
+    line_quantity,
+    line_price,
+    line_subtotal,
+    line_total,
     from transactions)
 
 select *
