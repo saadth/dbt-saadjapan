@@ -33,6 +33,7 @@ renamed as (
         safe_cast(json_value(billing, '$.email') as string) as billing_email,
         safe_cast(json_value(shipping, '$.first_name') as string) as shipping_first_name,
         safe_cast(json_value(shipping, '$.last_name') as string) as shipping_last_name,
+        safe_cast(json_value(shipping, '$.address_1') as string) as shipping_address_1,
         safe_cast(json_value(shipping, '$.city') as string) as shipping_city,
         safe_cast(json_value(shipping, '$.state') as string) as shipping_state,
         safe_cast(json_value(shipping, '$.postcode') as string) as shipping_postcode,
