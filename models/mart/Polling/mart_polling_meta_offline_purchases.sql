@@ -11,7 +11,8 @@ date_created as event_time,
 currency,
 total as value,
 'Purchase' as event_name,
-billing_country as country
+billing_country as country,
+contents
 from transactions
 where created_via != "checkout" and billing_email != "support@saadjapan.com"
 )
