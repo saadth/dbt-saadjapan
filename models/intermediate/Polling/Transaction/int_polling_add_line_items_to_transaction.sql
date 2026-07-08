@@ -17,7 +17,7 @@ string_agg(safe_cast(thb_subtotal as string), ", ") as line_subtotal,
 string_agg(safe_cast(thb_total as string), ", ") as line_total,
 ARRAY_AGG(
         JSON_OBJECT(
-            'id',id,
+            'id',CAST(id as int64),
             'quantity', quantity        
             )
     ) AS contents
