@@ -15,6 +15,13 @@ unnested as (
             JSON_VALUE(item_json, '$.name'),
             JSON_VALUE(item_json, '$.sku')
         ) AS sku,
+
+        IF(
+            JSON_VALUE(item_json, '$.variation_id') = '' OR JSON_VALUE(item_json, '$.variation_id') IS NULL OR JSON_VALUE(item_json, '$.variation_id') = '0',
+            JSON_VALUE(item_json, '$.product_id'),
+            JSON_VALUE(item_json, '$.variation_id')
+        ) AS id,        
+
         SAFE_CAST(JSON_VALUE(item_json, '$.quantity') AS INT64) AS quantity,
         SAFE_DIVIDE(
             (SAFE_CAST(JSON_VALUE(item_json, '$.subtotal') AS FLOAT64) + SAFE_CAST(JSON_VALUE(item_json, '$.subtotal_tax') AS FLOAT64)),
