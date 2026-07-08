@@ -38,5 +38,4 @@ organized as (
 
 select *
 from organized
-where date_created > '2025-08-18'
 order by date_created desc
