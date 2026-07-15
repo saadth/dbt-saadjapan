@@ -9,6 +9,8 @@ date_created,
 currency,
 total as conversion_value,
 'Purchase' as conversion_name,
+'GRANTED' AS ad_user_data_consent,
+'GRANTED' AS ad_personalization_consent
 from transactions
 where created_via != "checkout" and billing_email != "support@saadjapan.com"
 )
