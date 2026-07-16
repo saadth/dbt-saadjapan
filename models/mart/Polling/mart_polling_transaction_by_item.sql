@@ -3,6 +3,7 @@ with
 organized as (
     select
     order_id,
+    id as product_id,
     date_modified,
     date_created,
     status,
