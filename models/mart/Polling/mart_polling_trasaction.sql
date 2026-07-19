@@ -15,7 +15,7 @@ organized as (
     shipping_city as city,
     shipping_state as state,
     shipping_postcode as postcode,
-    shipping_country as country,
+    shipping_country as purchased_country,
     payment_method,
     created_via,
     cpos_source,
