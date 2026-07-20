@@ -5,11 +5,7 @@ with
 
 unnested as (
     select
-        o.order_id,
-        o.date_modified,
-        o.date_created,
-        o.status,
-        o.customer_id,
+        o.*,
         SAFE_CAST(JSON_VALUE(item_json, '$.name') as string) as product_name,
         IF(
             JSON_VALUE(item_json, '$.sku') = '' OR JSON_VALUE(item_json, '$.sku') IS NULL,
@@ -21,7 +17,7 @@ unnested as (
             JSON_VALUE(item_json, '$.variation_id') = '' OR JSON_VALUE(item_json, '$.variation_id') IS NULL OR JSON_VALUE(item_json, '$.variation_id') = '0',
             JSON_VALUE(item_json, '$.product_id'),
             JSON_VALUE(item_json, '$.variation_id')
-        ) AS id,        
+        ) AS product_id,        
         SAFE_CAST(JSON_VALUE(item_json, '$.quantity') AS INT64) AS quantity,
         SAFE_DIVIDE(
             (SAFE_CAST(JSON_VALUE(item_json, '$.subtotal') AS FLOAT64) + SAFE_CAST(JSON_VALUE(item_json, '$.subtotal_tax') AS FLOAT64)),
@@ -29,17 +25,6 @@ unnested as (
         ) AS price,
         SAFE_CAST(JSON_VALUE(item_json, '$.subtotal') AS FLOAT64) + SAFE_CAST(JSON_VALUE(item_json, '$.subtotal_tax') AS FLOAT64) AS subtotal,
         SAFE_CAST(JSON_VALUE(item_json, '$.total') AS FLOAT64) + SAFE_CAST(JSON_VALUE(item_json, '$.total_tax') AS FLOAT64) AS total,
-        currency,
-        created_via,
-        shipping_country,
-        payment_method,
-        SAFE_CAST(extracted_exchange_rate AS FLOAT64) AS extracted_exchange_rate,
-        gender,
-        age,
-        nationality,
-        reference,
-        purchase_reason,
-        shipping_address_1
     FROM orders o, UNNEST(JSON_QUERY_ARRAY(line_items)) AS item_json
 ),
 

@@ -4,11 +4,12 @@ organized as (
     select
     order_id,
     customer_id,
-    id as product_id,
+    product_id,
     date_modified,
     date_created,
     status,
     product_name,
+    purchase_location
     sku,
     quantity,
     currency,
@@ -18,6 +19,7 @@ organized as (
     nationality,
     reference,
     purchase_reason,
+    shipping_country as purchased_country,
     shipping_address_1,
     payment_method,
     extracted_exchange_rate as exchange_rate,
@@ -29,5 +31,5 @@ organized as (
 
 select *
 from organized
-where date_created > '2025-08-18'
+where date_created > '2025-08-18' and created_via = 'connectpos'
 order by date_created desc
