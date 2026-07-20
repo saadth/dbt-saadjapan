@@ -31,7 +31,12 @@ max(
         json_value(meta, '$.value'),
         null
         )) as utm_source,
-
+max(
+    if(
+        json_value(meta, '$.key') = '_aftership_tracking_number',
+        json_value(meta, '$.value'),
+        null
+        )) as tracking_number,
 --ACF data---
 max(
     if(
@@ -129,7 +134,13 @@ CASE
 END AS reference,
 
 COALESCE(NULLIF(TRIM(a.purchase_reason), ''), 'unsure') AS purchase_reason,
+case
+    when a.cpos_source = "in_store" then o.shipping_address_1
+    when o.created_via = "checkout" then "Website"
+    when a.cpos_source = "phone" then "Message/Phone"
+end as purchase_location,
 
+IF(TRIM(a.tracking_number) = '', NULL, a.tracking_number) as tracking_number, 
 --payment fees--
 IF(TRIM(a.stripe_fee) = '', NULL, a.stripe_fee) as stripe_fee, 
 IF(TRIM(a.stripe_net) = '', NULL, a.stripe_net) as stripe_net, 
@@ -143,5 +154,6 @@ left join
     using (order_id)
 )
 
-select *
+select 
+*
 from joined
