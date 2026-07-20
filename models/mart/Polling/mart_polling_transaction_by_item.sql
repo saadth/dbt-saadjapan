@@ -24,8 +24,8 @@ organized as (
     payment_method,
     extracted_exchange_rate as exchange_rate,
     thb_price,
-    thb_subtotal,
-    thb_total,
+    thb_item_subtotal,
+    thb_item_total,
     
     from transactions)
 
