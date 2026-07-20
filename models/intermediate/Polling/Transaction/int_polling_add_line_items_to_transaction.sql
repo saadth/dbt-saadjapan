@@ -13,8 +13,8 @@ string_agg(sku, ", ") as line_sku,
 string_agg(product_name, ", ") as line_product_name,
 string_agg(safe_cast(quantity as string), ", ") as line_quantity,
 string_agg(safe_cast(thb_price as string), ", ") as line_price,
-string_agg(safe_cast(thb_subtotal as string), ", ") as line_subtotal,
-string_agg(safe_cast(thb_total as string), ", ") as line_total,
+string_agg(safe_cast(thb_item_subtotal as string), ", ") as line_subtotal,
+string_agg(safe_cast(thb_item_total as string), ", ") as line_total,
 ARRAY_AGG(
         JSON_OBJECT(
             'id',CAST(id as int64),
