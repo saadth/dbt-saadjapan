@@ -105,8 +105,12 @@ IF(TRIM(a.cpos_source) = '', NULL, a.cpos_source) as cpos_source,
 IF(TRIM(a.cpos_payment_status) = '', NULL, a.cpos_payment_status) as cpos_payment_status, 
 IF(TRIM(a.cpos_fulfillment_status) = '', NULL, a.cpos_fulfillment_status) as cpos_fulfillment_status,
 IF(TRIM(a.gender) = '', NULL, a.gender) as gender, 
-IF(TRIM(a.age) = '', NULL, a.age) as age, 
-IF(TRIM(a.nationality) = '', NULL, a.nationality) as nationality, 
+IF(TRIM(a.age) = '', NULL, a.age) as age,
+case 
+    when o.created_via = 'checkout' then o.shipping_country
+    when TRIM(a.nationality) = '' then NULL
+    else TRIM(a.nationality)
+end as nationality,
 IF(TRIM(a.reference) = '', NULL, a.reference) as reference,
 IF(TRIM(a.purchase_reason) = '', NULL, a.purchase_reason) as purchase_reason,
 IF(TRIM(a.stripe_fee) = '', NULL, a.stripe_fee) as stripe_fee, 
@@ -123,3 +127,4 @@ left join
 
 select *
 from joined
+where created_via = 'checkout'
