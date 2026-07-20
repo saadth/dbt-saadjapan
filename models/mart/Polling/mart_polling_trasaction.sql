@@ -22,6 +22,7 @@ organized as (
     cpos_payment_status,
     gender,
     age,
+    nationality,
     reference,
     purchase_reason,
     extracted_exchange_rate as exchange_rate,
