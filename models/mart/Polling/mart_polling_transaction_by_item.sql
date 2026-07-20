@@ -9,7 +9,7 @@ organized as (
     date_created,
     status,
     product_name,
-    purchase_location
+    purchase_location,
     sku,
     quantity,
     currency,
