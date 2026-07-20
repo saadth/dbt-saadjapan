@@ -127,4 +127,3 @@ left join
 
 select *
 from joined
-where created_via = 'checkout'
