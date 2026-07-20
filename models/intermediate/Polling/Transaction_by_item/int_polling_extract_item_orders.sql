@@ -31,6 +31,7 @@ unnested as (
         SAFE_CAST(JSON_VALUE(item_json, '$.total') AS FLOAT64) + SAFE_CAST(JSON_VALUE(item_json, '$.total_tax') AS FLOAT64) AS total,
         currency,
         created_via,
+        shipping_country,
         payment_method,
         SAFE_CAST(extracted_exchange_rate AS FLOAT64) AS extracted_exchange_rate,
         gender,
