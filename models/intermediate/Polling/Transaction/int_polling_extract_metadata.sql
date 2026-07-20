@@ -106,6 +106,7 @@ IF(TRIM(a.cpos_payment_status) = '', NULL, a.cpos_payment_status) as cpos_paymen
 IF(TRIM(a.cpos_fulfillment_status) = '', NULL, a.cpos_fulfillment_status) as cpos_fulfillment_status,
 IF(TRIM(a.gender) = '', NULL, a.gender) as gender, 
 IF(TRIM(a.age) = '', NULL, a.age) as age, 
+IF(TRIM(a.nationality) = '', NULL, a.nationality) as nationality, 
 IF(TRIM(a.reference) = '', NULL, a.reference) as reference,
 IF(TRIM(a.purchase_reason) = '', NULL, a.purchase_reason) as purchase_reason,
 IF(TRIM(a.stripe_fee) = '', NULL, a.stripe_fee) as stripe_fee, 
