@@ -24,6 +24,14 @@ max(
         json_value(meta, '$.value'),
         null
         )) as cpos_fulfillment_status,
+--web data---
+max(
+    if(
+        json_value(meta, '$.key') = '_wc_order_attribution_utm_source',
+        json_value(meta, '$.value'),
+        null
+        )) as utm_source,
+
 --ACF data---
 max(
     if(
@@ -111,7 +119,11 @@ case
     when TRIM(a.nationality) = '' then NULL
     else TRIM(a.nationality)
 end as nationality,
-IF(TRIM(a.reference) = '', NULL, a.reference) as reference,
+case 
+    when o.created_via = 'checkout' then o.utm_source
+    when TRIM(a.reference) = '' then NULL
+    else TRIM(a.reference)
+end as reference,
 IF(TRIM(a.purchase_reason) = '', NULL, a.purchase_reason) as purchase_reason,
 IF(TRIM(a.stripe_fee) = '', NULL, a.stripe_fee) as stripe_fee, 
 IF(TRIM(a.stripe_net) = '', NULL, a.stripe_net) as stripe_net, 
