@@ -24,6 +24,19 @@ max(
         json_value(meta, '$.value'),
         null
         )) as cpos_fulfillment_status,
+--web data---
+max(
+    if(
+        json_value(meta, '$.key') = '_wc_order_attribution_utm_source',
+        json_value(meta, '$.value'),
+        null
+        )) as utm_source,
+max(
+    if(
+        json_value(meta, '$.key') = '_aftership_tracking_number',
+        json_value(meta, '$.value'),
+        null
+        )) as tracking_number,
 --ACF data---
 max(
     if(
@@ -101,13 +114,34 @@ from unnested
 group by order_id),
 
 joined as (select o.*,
-IF(TRIM(a.cpos_source) = '', NULL, a.cpos_source) as cpos_source, 
+IF(TRIM(a.cpos_source) = '', Null, a.cpos_source) as cpos_source, 
 IF(TRIM(a.cpos_payment_status) = '', NULL, a.cpos_payment_status) as cpos_payment_status, 
-IF(TRIM(a.cpos_fulfillment_status) = '', NULL, a.cpos_fulfillment_status) as cpos_fulfillment_status,
-IF(TRIM(a.gender) = '', NULL, a.gender) as gender, 
-IF(TRIM(a.age) = '', NULL, a.age) as age, 
-IF(TRIM(a.reference) = '', NULL, a.reference) as reference,
-IF(TRIM(a.purchase_reason) = '', NULL, a.purchase_reason) as purchase_reason,
+IF(TRIM(a.cpos_fulfillment_status) = '', Null, a.cpos_fulfillment_status) as cpos_fulfillment_status,
+
+--attributes--
+COALESCE(NULLIF(TRIM(a.gender), ''), 'unsure') AS gender,
+COALESCE(NULLIF(TRIM(a.age), ''), 'unsure') AS age,
+
+case 
+    when o.created_via = 'checkout' then COALESCE(NULLIF(TRIM(o.shipping_country), ''), 'unsure')
+    else COALESCE(NULLIF(TRIM(a.nationality), ''), 'unsure')
+end as nationality,
+
+CASE
+  WHEN o.created_via = 'checkout'
+    THEN COALESCE(NULLIF(TRIM(a.utm_source), ''), 'unsure')
+  ELSE COALESCE(NULLIF(TRIM(a.reference), ''), 'unsure')
+END AS reference,
+
+COALESCE(NULLIF(TRIM(a.purchase_reason), ''), 'unsure') AS purchase_reason,
+case
+    when a.cpos_source = "in_store" then o.shipping_address_1
+    when o.created_via = "checkout" then "Website"
+    when a.cpos_source = "phone" then "Message/Phone"
+end as purchase_location,
+
+IF(TRIM(a.tracking_number) = '', NULL, a.tracking_number) as tracking_number, 
+--payment fees--
 IF(TRIM(a.stripe_fee) = '', NULL, a.stripe_fee) as stripe_fee, 
 IF(TRIM(a.stripe_net) = '', NULL, a.stripe_net) as stripe_net, 
 IF(TRIM(a.stripe_currency) = '', NULL, a.stripe_currency) as stripe_currency,
@@ -120,5 +154,6 @@ left join
     using (order_id)
 )
 
-select *
+select 
+*
 from joined

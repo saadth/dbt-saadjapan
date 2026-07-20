@@ -3,6 +3,8 @@ with
 organized as (
     select
     order_id,
+    customer_id,
+    product_id,
     date_modified,
     date_created,
     status,
@@ -11,11 +13,20 @@ organized as (
     quantity,
     currency,
     created_via,
+    gender,
+    age,
+    nationality,
+    reference,
+    purchase_reason,
+    purchase_location,
+    shipping_country as purchased_country,
+    shipping_address_1,
     payment_method,
     extracted_exchange_rate as exchange_rate,
     thb_price,
-    thb_subtotal,
-    thb_total,
+    thb_item_subtotal,
+    thb_item_total,
+    
     from transactions)
 
 select *
