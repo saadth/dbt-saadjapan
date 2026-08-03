@@ -24,10 +24,7 @@ select
 SAFE_DIVIDE(safe_cast(discount_total as float64),safe_cast(extracted_exchange_rate
  as float64)) as thb_discount_total,
 SAFE_DIVIDE(safe_cast(total as float64),safe_cast(extracted_exchange_rate
- as float64)) as thb_total,
-
-refunds
-
+ as float64)) as thb_total
 from exchange_rate
 )
 
