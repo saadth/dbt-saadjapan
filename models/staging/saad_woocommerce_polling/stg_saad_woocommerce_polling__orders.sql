@@ -21,7 +21,6 @@ renamed as (
         safe_cast(total as float64) as total,
         safe_cast(discount_total as float64) as discount_total,
         safe_cast(shipping_total as float64) as shipping_total,
-        safe_cast(final_amount as float64) as final_amount,
         safe_cast(refunds as float64) as refunds,
         safe_cast(customer_id as int64) as customer_id,     
         safe_cast(json_value(billing, '$.first_name') as string) as billing_first_name,
