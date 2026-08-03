@@ -29,6 +29,7 @@ organized as (
     extracted_exchange_rate as exchange_rate,
     thb_total,
     thb_discount_total,
+    thb_final_amount,
     line_sku,
     line_product_name,
     line_quantity,
