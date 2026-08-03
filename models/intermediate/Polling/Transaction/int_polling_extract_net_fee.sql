@@ -5,6 +5,7 @@ exchange_rate as
     *,
     CASE currency
         WHEN 'THB' THEN SAFE_CAST(JSON_VALUE(exchange_rates, '$.THB.rate') as float64)
+        WHEN 'MYR' THEN SAFE_CAST(JSON_VALUE(exchange_rates, '$.MYR.rate') as float64)
         WHEN 'USD' THEN SAFE_CAST(JSON_VALUE(exchange_rates, '$.USD.rate') as float64)
         WHEN 'JPY' THEN SAFE_CAST(JSON_VALUE(exchange_rates, '$.JPY.rate')as float64)
         WHEN 'HKD' THEN SAFE_CAST(JSON_VALUE(exchange_rates, '$.HKD.rate')as float64)
@@ -20,18 +21,12 @@ from int_polling_extract_metadata),
 thb_amount_calc as (
 select
 *,
+SAFE_DIVIDE(safe_cast(discount_total as float64),safe_cast(extracted_exchange_rate
+ as float64)) as thb_discount_total,
 SAFE_DIVIDE(safe_cast(total as float64),safe_cast(extracted_exchange_rate
  as float64)) as thb_total,
 
-SAFE_DIVIDE(safe_cast(discount_total as float64),safe_cast(extracted_exchange_rate
- as float64)) as thb_discount_total,
-
-case 
-    when payment_method like '%stripe%' then safe_cast(stripe_net as float64)
-    when payment_method like '%ppcp%' then SAFE_DIVIDE(safe_cast(paypal_net as float64),safe_cast(extracted_exchange_rate
- as float64))
-    else safe_cast(final_amount as float64)
-end as thb_final_amount
+refunds
 
 from exchange_rate
 )
