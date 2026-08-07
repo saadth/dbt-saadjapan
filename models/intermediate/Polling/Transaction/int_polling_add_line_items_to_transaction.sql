@@ -17,7 +17,7 @@ string_agg(safe_cast(thb_item_subtotal as string), ", ") as line_subtotal,
 string_agg(safe_cast(thb_item_total as string), ", ") as line_total,
 ARRAY_AGG(
         JSON_OBJECT(
-            'id',CAST(id as int64),
+            'id',CAST(product_id as int64),
             'quantity', quantity        
             )
     ) AS contents
@@ -32,4 +32,4 @@ aggregated as a
 using (order_id))
 
 select *
-from joined
+from joined 
