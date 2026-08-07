@@ -3,7 +3,7 @@ with
 
 organized as (
 select
-order_id,
+order_number,
 billing_email as email,
 billing_first_name as fn,
 billing_last_name as ln,

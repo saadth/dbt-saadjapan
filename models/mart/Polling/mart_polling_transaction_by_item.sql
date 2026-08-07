@@ -2,7 +2,7 @@ with
     transactions as (select * from {{ ref('int_polling_extract_item_orders') }}),
 organized as (
     select
-    order_id,
+    order_number,
     customer_id,
     product_id,
     date_modified,
