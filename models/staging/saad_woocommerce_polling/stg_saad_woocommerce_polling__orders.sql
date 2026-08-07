@@ -9,8 +9,8 @@ source as (
 renamed as (
 
     select
-        safe_cast(id as int64) as id,
-        safe_cast(number as int64) as order_id,
+        safe_cast(id as int64) as order_id,
+        safe_cast(number as int64) as order_number,
         safe_cast(parent_id as int64) as parent_id,
         safe_cast(date_created as timestamp) as date_created,
         safe_cast(date_modified as timestamp) as date_modified,
