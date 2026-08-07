@@ -1,10 +1,10 @@
 with orders as (select * from {{ ref("stg_saad_woocommerce_polling__orders") }}),
 
-unnested as (select o.order_id, meta
+unnested as (select o.order_number, meta
 from orders as o, unnest(JSON_QUERY_ARRAY(meta_data)) as meta),
 
 meta_data_extract as (select
-order_id,
+order_number,
 --connectpos---
 max(
     if(
@@ -111,7 +111,7 @@ max(
         )) as exchange_rates
 
 from unnested
-group by order_id),
+group by order_number),
 
 joined as (select o.*,
 IF(TRIM(a.cpos_source) = '', Null, a.cpos_source) as cpos_source, 
@@ -151,7 +151,7 @@ IF(TRIM(a.exchange_rates) = '', NULL, a.exchange_rates) as exchange_rates
 from orders as o
 left join
     meta_data_extract as a
-    using (order_id)
+    using (order_number)
 )
 
 select 

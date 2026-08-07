@@ -8,7 +8,7 @@ with
 
 aggregated as (
 select 
-order_id,
+order_number,
 string_agg(sku, ", ") as line_sku,
 string_agg(product_name, ", ") as line_product_name,
 string_agg(safe_cast(quantity as string), ", ") as line_quantity,
@@ -22,14 +22,14 @@ ARRAY_AGG(
             )
     ) AS contents
 from order_item
-group by order_id
+group by order_number
 ),
 joined as (
 select *
 from transactions
 left join
 aggregated as a
-using (order_id))
+using (order_number))
 
 select *
 from joined 

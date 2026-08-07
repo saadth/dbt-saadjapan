@@ -2,7 +2,7 @@ with
     transactions as (select * from {{ ref('int_polling_add_line_items_to_transaction') }}),
 organized as (
     select
-    order_id,
+    order_number,
     date_created,
     date_modified,
     status,
