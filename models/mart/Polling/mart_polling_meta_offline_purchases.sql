@@ -14,7 +14,7 @@ total as value,
 billing_country as country,
 contents
 from transactions
-where created_via != "checkout" and billing_email != "support@saadjapan.com"
+where created_via != "checkout" and billing_email not in ( "support@saadjapan.com", "guest@connectpos.com") and billing_email != ""
 )
 
 select *
