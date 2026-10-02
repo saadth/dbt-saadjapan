@@ -18,3 +18,4 @@ where created_via != "checkout" and billing_email not in("support@saadjapan.com"
 
 select *
 from organized
+where date_created <= CURRENT_TIMESTAMP() and date_created >= TIMESTAMP_SUB(CURRENT_TIMESTAMP(), INTERVAL 63 DAY)
