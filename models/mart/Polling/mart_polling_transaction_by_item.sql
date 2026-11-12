@@ -4,6 +4,7 @@ organized as (
     select
     order_number,
     customer_id,
+    product_image_link,
     product_id,
     date_modified,
     date_created,
