@@ -27,7 +27,8 @@ organized as (
     thb_price,
     thb_item_subtotal,
     thb_item_total,
-    
+    thb_total as thb_order_total,
+    thb_final_amount as thb_order_final_amount
     from transactions)
 
 select *
